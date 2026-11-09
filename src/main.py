@@ -1,4 +1,10 @@
-from textnode import TextNode, TextType
+from copystatic import copy_directory
+from generate_page import generate_pages_recursive
 
-test = TextNode("yati yata", TextType.TEXT)
-print(test)
+
+def main():
+    copy_directory("static", "public")
+    generate_pages_recursive("content", "template.html", "public")
+
+
+main()

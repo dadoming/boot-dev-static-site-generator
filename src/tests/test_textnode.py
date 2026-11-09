@@ -40,13 +40,13 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(html_node.value, "print()")
 
     def test_link(self):
-        node = TextNode("click", TextType.LINKS, "https://x.com")
+        node = TextNode("click", TextType.LINK, "https://x.com")
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.tag, "a")
         self.assertEqual(html_node.props, {"href": "https://x.com"})
 
     def test_image(self):
-        node = TextNode("alt text", TextType.IMAGES, "https://x.com/i.png")
+        node = TextNode("alt text", TextType.IMAGE, "https://x.com/i.png")
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.tag, "img")
         self.assertEqual(html_node.value, "")
