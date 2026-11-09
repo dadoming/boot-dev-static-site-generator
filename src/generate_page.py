@@ -10,7 +10,9 @@ def extract_title(markdown: str) -> str:
     raise ValueError("No header found")
 
 
-def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
+def generate_page(
+    from_path: str, template_path: str, dest_path: str, basepath: str = "/"
+) -> None:
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path) as f:
         markdown = f.read()
@@ -20,6 +22,9 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     content = markdown_to_html_node(markdown).to_html()
     title = extract_title(markdown)
     page = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
+    page = page.replace('href="/', f'href="{basepath}').replace(
+        'src="/', f'src="{basepath}'
+    )
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, "w") as f:
@@ -27,15 +32,18 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
 
 
 def generate_pages_recursive(
-    dir_path_content: str, template_path: str, dest_dir_path: str
+    dir_path_content: str,
+    template_path: str,
+    dest_dir_path: str,
+    basepath: str = "/",
 ) -> None:
     for entry in os.listdir(dir_path_content):
         src = os.path.join(dir_path_content, entry)
         if os.path.isfile(src):
             if entry.endswith(".md"):
                 dest = os.path.join(dest_dir_path, entry.removesuffix(".md") + ".html")
-                generate_page(src, template_path, dest)
+                generate_page(src, template_path, dest, basepath)
         else:
             generate_pages_recursive(
-                src, template_path, os.path.join(dest_dir_path, entry)
+                src, template_path, os.path.join(dest_dir_path, entry), basepath
             )
